@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using TShockAPI;
-using TShockAPI.DB;
 using Terraria;
 using TerrariaApi.Server;
 
+// using TShockAPI.DB;
 //using Mono.Data.Sqlite;
 //using MySql.Data.MySqlClient;
 
@@ -49,7 +49,7 @@ namespace WorldRefill
 
         public override Version Version
         {
-            get { return new Version("1.1.1"); }
+            get { return new Version("1.2"); }
         }
         public override string Name
         {
@@ -525,6 +525,20 @@ namespace WorldRefill
             {
                 oreType = 169;
             }
+
+            // 1.2 Hardmode Ores
+            else if (args.Parameters[0].ToLower() == "palladium")
+            {
+                oreType = 221;
+            }
+            else if (args.Parameters[0].ToLower() == "orichalcum")
+            {
+                oreType = 222;
+            }
+            else if (args.Parameters[0].ToLower() == "titanium")
+            {
+                oreType = 223;
+            }
             else
             {
                 ply.SendMessage("Warning! Typo in Tile name or Tile does not exist", Color.Red);    //should this be a help message instead?
@@ -548,8 +562,8 @@ namespace WorldRefill
                 //Get random number from 100 tiles each side
                 int i2 = WorldGen.genRand.Next(100, Main.maxTilesX - 100);
                 double worldY = Main.worldSurface;
-                //Rare Ores  - Adamantite, Demonite, Diamond
-                if ((oreType == 111) || (oreType == 22) || (oreType >= 63) && (oreType <= 68))
+                //Rare Ores  - Adamantite (Titanium), Demonite, Diamond
+                if ((oreType == 111) || (oreType == 22) || (oreType == 223) || (oreType >= 63) && (oreType <= 68))
                 {
                     //Some formula created by k0rd for getting somewhere between hell and roughly half way after rock
                     worldY = (Main.rockLayer + Main.rockLayer + (double)Main.maxTilesY) / 3.0;
@@ -800,7 +814,7 @@ namespace WorldRefill
             
             if (args.Parameters.Count == 0 || args.Parameters.Count > 2)
             {
-                args.Player.SendMessage("Usage: /genchests <amount> [use hardmode items true/false/default]", Color.Green);
+                args.Player.SendMessage("Usage: /genchests <amount> [gen mode: default/easy/all]", Color.Green);
             }
             int empty = 0;
             int tmpEmpty = 0;
@@ -851,14 +865,25 @@ namespace WorldRefill
                     int contain;
                     if( setting == "default" )
                     {
-                        int[] itemID = new int[] { 168, 20, 22, 40, 42, 28, 292, 298, 299, 290, 8, 31, 72, 280, 284, 281, 282, 279, 285, 21, 289, 303, 291, 304, 49, 50, 52, 53, 54, 55, 51, 43, 167, 188, 295, 302, 305, 73, 301, 159, 65, 158, 117, 265, 294, 288, 297, 300, 218, 112, 220};
+                        // Default Items: Grenade(168), Copper Bar(20), Iron Bar(22), Wooden Arrow(40), Shuriken(42), Lesser Healing Potion(28), Ironskin Potion(292), Shine Potion (298), 
+                        // Night Owl Potion(299), Swiftness Potion(290), Torch(8), Bottle(31), Silver Coin(72), Spear(280), Wooden Boomerang(284), Blowpipe(281), Glowstick(282),
+                        // Throwing Knife(279), Aglet(285), Silver Bar(21), Regeneration Potion(289), Archery Potion(303), Gills Potion(291), Hunter Potion(304), Band of Regeneration(49),
+                        // Magic Mirror(50), Angel Statue(52), Cloud in a Bottle(53), Hermes Boots(54), Enchanted Boomerang(55), Jester's Arrow(51), Suspicious Looking Eye(43), Dynamite(167),
+                        // Healing Potion(188), Featherfall Potion(295), Water Walking Potion(302), Gravitation Potion(305), Gold Coin(73), Thorns Potion(301), Shiny Red Baloon(159), Starfury(65),
+                        // Lucky Horseshoe(158), Meteorite Bar(117), Hellfire Arrow(265), Magic Power Potion(294), Obsidian Skin Potion(288), Invisibility Potion(297), Battle Potion(300),
+                        // Flamelash (218), Flower of Fire(112), Sunfury(220)
+                        // ID's Only: 168, 20, 22, 40, 42, 28, 292, 298, 299, 290, 8, 31, 72, 280, 284, 281, 282, 279, 285, 21, 289, 303, 291, 304, 49, 50, 52, 53, 54, 55, 51, 43, 167, 188, 295, 302, 305, 73, 301, 159, 65, 158, 117, 265, 294, 288, 297, 300, 218, 112, 220
+                        
+                        // Plugin Version 1.2 - New Items: Rope Coil(985), Guide Voodoo Doll(267), Cobalt Shield(156)
+
+                        int[] itemID = new int[] { 168, 20, 22, 40, 42, 28, 292, 298, 299, 290, 8, 31, 72, 280, 284, 281, 282, 279, 285, 21, 289, 303, 291, 304, 49, 50, 52, 53, 54, 55, 51, 43, 167, 188, 295, 302, 305, 73, 301, 159, 65, 158, 117, 265, 294, 288, 297, 300, 218, 112, 220, 985, 267, 156 };
                         contain = itemID[WorldGen.genRand.Next(0, itemID.GetUpperBound(0))];
                     }
-                    else if (setting == "true")
+                    else if (setting == "all")
                     {
-                        contain = WorldGen.genRand.Next(1, 603);
+                        contain = WorldGen.genRand.Next(1, 1603);
                     }
-                    else if (setting == "false")
+                    else if (setting == "easy")
                     {
                         contain = WorldGen.genRand.Next(1, 363);
                     }
